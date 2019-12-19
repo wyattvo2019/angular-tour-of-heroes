@@ -4,7 +4,7 @@
     <label>Hero name:
         <input #heroName />
     </label>
-    <button (click)=" add(heroName.value; heroName.value='' ">Add</button>
+    <button (click)=" add(heroName.value); heroName.value='' ">Add</button>
 </div>
 
 
@@ -13,6 +13,6 @@
         <a routerLink="/detail/{{hero.id}}">
             <span class="badge">{{hero.id}}</span>{{hero.name}}
         </a>
-        <button class="delete" title="delete hero" (click)="delete(hero">X</button>
+        <button class="delete" title="delete hero" (click)="delete(hero)">X</button>
     </li>
 </ul>
