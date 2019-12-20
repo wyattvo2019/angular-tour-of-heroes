@@ -14,11 +14,16 @@ export class HeroService {
 
   private heroesUrl = 'api/heroes'; //URL to web api
 
+  httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json'})
+  };
+
   constructor(
     private http: HttpClient,
     private messageService: MessageService
     ) { }
 
+  //Get heroes from server
   getHeroes(): Observable<Hero[]> {
     // TODO: send the message after fetching the heroes
     // this.messageService.add('HeroServie: fetched heroes');
@@ -28,6 +33,20 @@ export class HeroService {
         tap(_ => this.log('fetched heroes')),
         catchError(this.handleError<Hero[]>('getHeroes', []))
       );
+  }
+
+  //Get hero by id. Return undefined when id not found
+  getHeroNo404<Data>(id: number): Observable<Hero> {
+    const url = `${this.heroesUrl}/?id=${id}`;
+    return this.http.get<Hero[]>(url)
+    .pipe(
+      map(heroes => heroes[0]), //returns a {0|1} element array)
+      tap(h => {
+        const outcome = h ? `fetched` : `did not find`;
+        this.log(`${outcome} hero id=${id}`);
+      }),
+      catchError(this.handleError<Hero>(`getHero id=${id}`))
+    );
   }
 
   getHero(id: number): Observable<Hero> {
@@ -82,10 +101,6 @@ export class HeroService {
       catchError(this.handleError<Hero[]>('searchHeroes',[]))
     );
   }
-
-  httpOptions = {
-    headers: new HttpHeaders({ 'Content-Type': 'application/json'})
-  };
 
 
   private log(message: string){
